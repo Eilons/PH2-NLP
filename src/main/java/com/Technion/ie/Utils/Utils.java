@@ -1,30 +1,22 @@
 package com.Technion.ie.Utils;
 
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.util.JSONPObject;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -85,7 +77,7 @@ public class Utils {
 		return parseTrees;
 	}
 	
-	private static List<String> readTreeFile (String path) throws IOException, ParseException {
+	private static List<String> readTreeFile (String path) throws IOException {
 		InputStream wordFile = Utils.class.getResourceAsStream(path);
 		List<String> allLines = Utils.readAllLines(wordFile);
 		ArrayList<String> treeList  = new ArrayList<String>();
@@ -121,14 +113,14 @@ public class Utils {
 	//Takes a nested list in loaded JSON format and a set of rare (word, tag) pairs 
 	//    and returns the new rare_tree     
 	{
-		if (rootNode.size() == 3)
+		if (rootNode.length() == 3)
 		{
 			replaceRareWords((JSONArray)rootNode.get(1) , wordCountMap);
 			replaceRareWords((JSONArray)rootNode.get(2) , wordCountMap);
 		}
 		else 
 		{
-			if (rootNode.size() == 2) 
+			if (rootNode.length() == 2) 
 			{
 				String word;
 				word = rootNode.get(1).toString();
@@ -137,7 +129,7 @@ public class Utils {
 					String tag;
 					tag = rootNode.get(0).toString();
 					rootNode.remove(1);
-					rootNode.add("_RARE_");
+					rootNode.put(new JSONObject("_RARE_"));
 				}
 			}
 		}
