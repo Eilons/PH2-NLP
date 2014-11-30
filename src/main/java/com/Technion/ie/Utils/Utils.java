@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -26,6 +28,8 @@ import org.json.simple.parser.ParseException;
  */
 
 public class Utils {
+	
+	private final Logger logger = Logger.getLogger(Utils.class);
 	public static String RESULT_LINE_FORMAT = "%s\n";
 
 	public static Map<String,Short> readCountsFile() throws IOException, URISyntaxException {
@@ -50,6 +54,7 @@ public class Utils {
 				
 			}
 		}
+		
 		return wordCountMap;
 	}
 	
@@ -59,8 +64,9 @@ public class Utils {
 	 * @throws ParseException
 	 * Main func : read line by line from a file, each line is tree.
 	 * return each tree with _RARE_ symbol for rare words
+	 * @throws JSONException 
 	 */
-	public static List<JSONArray> buildRareTrees (Map<String,Short> wordCountMap ) throws IOException, ParseException
+	public static List<JSONArray> buildRareTrees (Map<String,Short> wordCountMap ) throws IOException, ParseException, JSONException
 	{
 		List<String> treeLines = new ArrayList<String>();//contain all tree rows
 		List<JSONArray> parseTrees = new ArrayList<JSONArray>();
@@ -103,33 +109,32 @@ public class Utils {
 
 	private static JSONArray constructJsonTrees(String line) throws JsonParseException, JsonMappingException, IOException, ParseException
 	{
-		JSONArray rootNode = null;
+		org.json.simple.JSONArray rootNode = null;
 		JSONParser parser = new JSONParser();
-		rootNode = (JSONArray) parser.parse(line);
+		rootNode = (org.json.simple.JSONArray) parser.parse(line);
 		return rootNode;
 	}
 	
-	private static void replaceRareWords (JSONArray rootNode , Map<String,Short> wordCountMap)
+	private static void replaceRareWords (JSONArray rootNode , Map<String,Short> wordCountMap) throws JSONException
 	//Takes a nested list in loaded JSON format and a set of rare (word, tag) pairs 
 	//    and returns the new rare_tree     
 	{
-		if (rootNode.length() == 3)
+		if (rootNode.size() == 3)
 		{
 			replaceRareWords((JSONArray)rootNode.get(1) , wordCountMap);
 			replaceRareWords((JSONArray)rootNode.get(2) , wordCountMap);
 		}
 		else 
 		{
-			if (rootNode.length() == 2) 
+			if (rootNode.size() == 2) 
 			{
 				String word;
 				word = rootNode.get(1).toString();
 				if (Utils.isRareWord(word , wordCountMap))
 				{
-					String tag;
-					tag = rootNode.get(0).toString();
 					rootNode.remove(1);
-					rootNode.put(new JSONObject("_RARE_"));
+					rootNode.add( "_RARE_");
+					
 				}
 			}
 		}
