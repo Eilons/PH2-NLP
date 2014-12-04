@@ -1,5 +1,9 @@
 package com.Technion.ie.Emission;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,10 +23,27 @@ public class RuleParameters {
 	public static String UNARY_RULE_FORMAT = "%s-%s";
 	
 	private List<String> fileLines;
+	public Map<String,Short> nonterminalCountMap;
+	public Map<String,Short> binaryRuleCountMap;
+	public Map<String,Short> unaryRuleCountMap;
+	public Map<String,Double> unaryRuleProbMap;
+	public Map<String,Double> binaryRuleProbMap;
+	public List<String> trainWordList;
+	public Map<String,List<String[]>> binaryRuleMap;
+	
+	
 	
 	public RuleParameters (List<String> allLines)
 	{
 		fileLines = allLines;
+		this.nonterminalCountMap = parametersCount(NONTERMINAL);
+		this.binaryRuleCountMap = parametersCount(BINARYRULE);
+		this.unaryRuleCountMap = parametersCount(UNARYRULE);
+		this.unaryRuleProbMap = unaryRuleProb(unaryRuleCountMap, nonterminalCountMap);
+		this.binaryRuleProbMap = binaryRuleProb(binaryRuleCountMap, nonterminalCountMap);
+		this.trainWordList = trainWordsList();
+		this.binaryRuleMap = binaryRuleSet();
+		
 	}
 	/**
 	 * 
@@ -134,7 +155,47 @@ public class RuleParameters {
 			return unaryRuleProbMap;
 		}
 	
+	public List<String> trainWordsList() {
+		List<String> wordList = new ArrayList<String>();
+		for (String line: fileLines)
+		{
+			String[] strings = line.split(" ");
+			if (strings[1].equals(UNARYRULE))
+			{
+				if (!wordList.contains(strings[3]))
+				{
+					wordList.add(strings[3]);
+				}
+			}
+		}
+		
+		return wordList;
+	}
 	
-	
-
+	public Map<String,List<String[]>> binaryRuleSet()
+	{
+		Map<String,List<String[]>> ruleSet = new TreeMap<String,List<String[]>>();
+		for (String line: fileLines)
+		{
+			String[] strings = line.split(" ");
+			if (strings[1].equals(BINARYRULE))
+			{
+				if (ruleSet.containsKey(strings[2]))
+				{
+						String[] str = {strings[3], strings[4]};
+						List<String[]> rules = ruleSet.get(strings[2]);
+						rules.add(str);
+						ruleSet.put(strings[2], rules);
+				}
+				else
+				{
+					String[] str = {strings[3], strings[4]};
+					List<String[]> rules = new ArrayList<String[]>();
+					rules.add(str);
+					ruleSet.put(strings[2], rules);
+				}
+			}
+		}
+		return ruleSet;
+	}
 }

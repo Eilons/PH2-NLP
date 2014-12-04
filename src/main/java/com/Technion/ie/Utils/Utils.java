@@ -32,10 +32,9 @@ public class Utils {
 	private final Logger logger = Logger.getLogger(Utils.class);
 	public static String RESULT_LINE_FORMAT = "%s\n";
 
-	public static Map<String,Short> readCountsFileOriginal() throws IOException, URISyntaxException {
-		String countsFile = "/cfgCounts.txt";
+	public static Map<String,Short> readCountsFileOriginal(String path) throws IOException, URISyntaxException {
 		Map<String,Short> wordCountMap = new TreeMap<String, Short>();
-		InputStream wordCountFile = Utils.class.getResourceAsStream(countsFile);
+		InputStream wordCountFile = Utils.class.getResourceAsStream(path);
 		List<String> allLines = Utils.readAllLines(wordCountFile);
 		for (String line : allLines) {
 			String[] strings = line.split(" ");
