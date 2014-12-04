@@ -15,12 +15,11 @@ import org.json.simple.parser.ParseException;
 import com.Technion.ie.Utils.Utils;
 
 public class ParseFiles {
-	 private final static Logger logger = Logger.getLogger(ParseFiles.class);
+	 
 	 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException, ParseException, JSONException {
-		logger.debug("check debug");
 		Map<String,Short> wordCountMap = new TreeMap<String,Short>();
-		wordCountMap = Utils.readCountsFile();
+		wordCountMap = Utils.readCountsFileOriginal();
 		List<org.json.simple.JSONArray> parseTree = Utils.buildRareTrees(wordCountMap);
 		Utils.writeNewParseTrees(parseTree);
 	}

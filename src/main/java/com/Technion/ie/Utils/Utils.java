@@ -32,7 +32,7 @@ public class Utils {
 	private final Logger logger = Logger.getLogger(Utils.class);
 	public static String RESULT_LINE_FORMAT = "%s\n";
 
-	public static Map<String,Short> readCountsFile() throws IOException, URISyntaxException {
+	public static Map<String,Short> readCountsFileOriginal() throws IOException, URISyntaxException {
 		String countsFile = "/cfgCounts.txt";
 		Map<String,Short> wordCountMap = new TreeMap<String, Short>();
 		InputStream wordCountFile = Utils.class.getResourceAsStream(countsFile);
@@ -178,6 +178,17 @@ public class Utils {
 					e.printStackTrace();
 			}
 		
+	}
+	
+	//part 2
+	
+	private List<String> readFile (String path) throws IOException
+	{
+		Map<String,Short> wordCountMap = new TreeMap<String, Short>();
+		InputStream wordCountFile = Utils.class.getResourceAsStream(path);
+		List<String> allLines = Utils.readAllLines(wordCountFile);
+		
+		return allLines;
 	}
 	
 }
