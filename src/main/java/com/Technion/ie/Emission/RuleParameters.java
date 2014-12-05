@@ -131,7 +131,7 @@ public class RuleParameters {
 			{
 				String[] entryKey = entry.getKey().split("-");
 				String key = entryKey[0];
-				Double prob = (double) ((entry.getValue())/nonterminalCountMap.get(key));
+				Double prob = (double) (((double)entry.getValue())/(double)nonterminalCountMap.get(key));
 				binaryRuleProbMap.put(entry.getKey(), prob);
 			}
 			
@@ -147,7 +147,7 @@ public class RuleParameters {
 			{
 				String[] entryKey = entry.getKey().split("-");
 				String key = entryKey[0];
-				Double prob = (double) ((entry.getValue())/nonterminalCountMap.get(key));
+				Double prob = (double) (((double)entry.getValue())/ (double)nonterminalCountMap.get(key));
 				unaryRuleProbMap.put(entry.getKey(), prob);
 				
 			}

@@ -1,1 +1,3 @@
-12:46:51,578 - [main] DEBUG main.ParseFiles  - check debug
+21:01:38,727 - [main] DEBUG com.Technion.ie.BaseLine.CkyAlg  - [1989, ?]
+21:02:00,228 - [main] INFO  com.Technion.ie.BaseLine.CkyAlg  - checking:pi(0,1,SBARQ) = q(SBARQ->SBARQ.)* pi(0,0,SBARQ) * pi (1,1,.)
+21:02:15,914 - [main] INFO  com.Technion.ie.BaseLine.CkyAlg  - value is :2.936857562408223E-4*0.0*0.8341535433070866

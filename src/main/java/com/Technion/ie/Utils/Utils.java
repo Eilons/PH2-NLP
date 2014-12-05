@@ -181,13 +181,27 @@ public class Utils {
 	
 	//part 2
 	
-	private List<String> readFile (String path) throws IOException
+	public static List<String> readFile (String path) throws IOException
 	{
-		Map<String,Short> wordCountMap = new TreeMap<String, Short>();
 		InputStream wordCountFile = Utils.class.getResourceAsStream(path);
 		List<String> allLines = Utils.readAllLines(wordCountFile);
 		
 		return allLines;
+	}
+
+	public static List<List<String>> readFileSeparateIntoWords( List<String> fileSentences) {
+		List<List<String>> sentencesWords = new ArrayList<List<String>>();
+		for (String sentence : fileSentences) 
+		{
+			String[] strings = sentence.split(" ");
+			List<String> sentenceWords = new ArrayList<>();
+			for (String str : strings) {
+				sentenceWords.add(str);
+				
+			}
+			sentencesWords.add(sentenceWords);
+		}
+		return sentencesWords;
 	}
 	
 }
