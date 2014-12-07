@@ -204,4 +204,15 @@ public class Utils {
 		return sentencesWords;
 	}
 	
+	public static void writeResultsToTxt (List<String> parseTreeContents)
+	{
+		String content ="";
+		for (String sentence : parseTreeContents) {
+			
+				content += (String.format(RESULT_LINE_FORMAT, sentence));
+		}
+			writeToFile ("/c:/h2p-NLP/parse_dev.out",content);
+		
+	}
+	
 }

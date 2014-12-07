@@ -2,10 +2,10 @@ package com.Technion.ie.dao;
 
 public class ResultForamt {
 	
-	private String[] subtree;
+	private String subtree;
 	private double prob;
 	
-	public ResultForamt (String[] subtree, double prob)
+	public ResultForamt (String subtree, double prob)
 	{
 		this.subtree = subtree;
 		this.prob = prob;
@@ -13,16 +13,16 @@ public class ResultForamt {
 	
 	public ResultForamt ()
 	{
-		this.subtree = new String[0];
+		this.subtree = "";
 		this.prob = 0.0;
 	}
 	
-	public void setSubtree (String[] newSubtree)
+	public void setSubtree (String newSubtree)
 	{
 		this.subtree = newSubtree;
 	}
 	
-	public String[] getSubtree ()
+	public String getSubtree ()
 	{
 		return this.subtree;
 	}
