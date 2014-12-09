@@ -18,12 +18,12 @@ public class CkyAlg {
 	private final static String S = "S";
 	public static String BINARY_RULE_FORMAT = "%s-%s-%s";
 	public static String UNARY_RULE_FORMAT = "%s-%s";
-	public Map <String , Map<String,Double>> pi;// key: (1-1-NP) -> value: [(PP-VP)-> 0.5]
+	public Map <String , ResultForamt> pi;// key: (1-1-NP) -> value: [(PP-VP)-> 0.5]
 	
 	
 	public CkyAlg ()
 	{
-		pi = new TreeMap<String, Map<String,Double>>();
+		pi = new TreeMap<String, ResultForamt>();
 	}
 	
 	public ResultForamt cky_alg ( List<String> sentence, RuleParameters rp)
@@ -66,13 +66,15 @@ public class CkyAlg {
 		{
 			String key = String.format(UNARY_RULE_FORMAT,X,sent.get(i));
 			prob = UnaryRuleProb (key, sent.get(i), X , rp);
-			String subtree ="[" + X + "," + sent.get(i) + "]"; 
+			String subtree ="[" + "\"" + X + "\"" + "," + "\"" + sent.get(i) + "\"" + "]"; 
+			logger.info("pi(" + i +","+j+","+X+")="+ prob + "rule =("+ X + ","+sent.get(i)+ ")");
 			rf.setSubtree(subtree);
 			rf.setProb(prob);
 			return rf;
 		}
 		else// Binary Rule
 		{
+			logger.info("calc max of pi(" + i +","+j+","+X+")");
 			String piSeqKey = String.format(BINARY_RULE_FORMAT, Integer.toString(i) ,Integer.toString(j) , X);
 			if (!pi.containsKey(piSeqKey))
 			{
@@ -82,15 +84,20 @@ public class CkyAlg {
 				//left = (maxResultMap.getSubtree())[0];
 				//right = (maxResultMap.getSubtree())[1];
 				//String SeqRuleKey = String.format(UNARY_RULE_FORMAT, left ,right);
-				Map<String,Double> ruleMap = new TreeMap<String,Double>();
-				prob = maxResultMap.getProb(); 
-				ruleMap.put(dependency, prob);
+				prob = maxResultMap.getProb();
+				ResultForamt ruleMap = new ResultForamt(dependency, prob);
 				pi.put(piSeqKey, ruleMap);
+				logger.info("pi(" + i +","+j+","+X+")="+ prob + "rule =("+ X + ","+dependency+ ")");
 				
+			}
+			else {
+				dependency = pi.get(piSeqKey).getSubtree();
+				prob = pi.get(piSeqKey).getProb();
 			}
 		}
 		//String subtree = "[" + X + "," + left + "," + right + "]";
-		String subtree = "[" + X + "," + dependency + "]";
+		String subtree = "[" + "\"" + X + "\"" + ","  + dependency + "]";
+		
 		rf.setSubtree(subtree);
 		rf.setProb(prob);		
 		return rf;
@@ -106,7 +113,7 @@ public class CkyAlg {
 		String Z ="";
 		double ruleProb;
 		double allProb;
-		double best = -1;
+		double best = -1.0;
 		ResultForamt left_Rule = new ResultForamt();
 		ResultForamt right_Rule = new ResultForamt();
 		ResultForamt resultRule = new ResultForamt();
@@ -124,12 +131,15 @@ public class CkyAlg {
 					int splitPlus1 = s + 1; //only for printing debug
 					ruleProb = rp.binaryRuleProbMap.get(key);
 					left_Rule = cky_help(i, s, sent, left, rp);
+					//logger.info("checking:" + "pi(" + i + "," + s + "," + left + ") = " + left_Rule.getProb());
 						if (left_Rule.getProb() <= 0.0) continue;
 					right_Rule = cky_help (s+1,j,sent,right,rp);
+					//logger.info("checking:" + "pi(" + i + "," + s + "," + right + ") = " + right_Rule.getProb());
 						if (right_Rule.getProb() <= 0.0) continue;
 					//logger.info("checking:" + "pi(" + i + "," + j + "," + X + ") = " + "q(" + X + "->" + left + "," + right +")" + "* pi(" + i + "," + s + "," + left + ") * pi (" + splitPlus1 + "," + j + "," + right + ")");
 					//logger.info("value is :" + ruleProb + "*" + left_Rule.getProb() + "*" + right_Rule.getProb() );
 					allProb = ruleProb * left_Rule.getProb() * right_Rule.getProb();
+					//logger.info("value is :" + allProb );
 					if (allProb > best)//Update
 					{
 						best = allProb;
@@ -137,8 +147,7 @@ public class CkyAlg {
 						Z1 = right;
 						Y = left_Rule.getSubtree();
 						Z = right_Rule.getSubtree();
-					}
-					
+					}	
 					
 				}
 			}
@@ -147,8 +156,7 @@ public class CkyAlg {
 		resultRule.setSubtree(resultKey);
 		resultRule.setProb(best);
 		logger.info("checking:" + "pi(" + i + "," + j + "," + X + ") = " + "q(" + X + "->" + Y1 + "," + Z1 +")");
-		
-		logger.info("Max Vaule for:" + "pi(" + i + "," + j + "," + X + ") = " + "[" + X + "," + Y + "," + Z + "]" );//suppose to be only one from each 
+		logger.info("Max Vaule for:" + "pi(" + i + "," + j + "," + X + ") = " + "[" + "\"" + X + "\"" + "," + Y + "," + Z  + "]" );//suppose to be only one from each 
 		logger.info("value for pi(" + i + "," + j + "," + X + ") :" + "is" + best);
 		return resultRule;
 		
@@ -174,7 +182,7 @@ public class CkyAlg {
 			return rp.unaryRuleProbMap.get(key);
 		
 		if (rp.trainWordList.contains(word))
-			return (double) 0;
+			return (double) 0.0;
 		
 		String RareKey = String.format(UNARY_RULE_FORMAT,X,"_RARE_");
 		if (rp.unaryRuleProbMap.containsKey(RareKey))
