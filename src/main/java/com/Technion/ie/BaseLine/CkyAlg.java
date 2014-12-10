@@ -36,12 +36,7 @@ public class CkyAlg {
 			return cky_help (0, n-1, sentence, SBARQ, rp);
 			
 		}
-		return cky_help (0, n-1, sentence, S, rp);
-		
-		
-		
-		
-		
+		return cky_help (0, n-1, sentence, S, rp);	
 	}
 	/**
 	 * Accepting the starting position i, ending position j, sentence, parent tag X, and a  
@@ -59,8 +54,6 @@ public class CkyAlg {
 	{
 		double prob =0.0;
 		String dependency = "";
-		String left = "";
-		String right = "";
 		ResultForamt rf = new ResultForamt();
 		if (i == j)//Unary Rule
 		{
@@ -76,14 +69,11 @@ public class CkyAlg {
 		{
 			logger.info("calc max of pi(" + i +","+j+","+X+")");
 			String piSeqKey = String.format(BINARY_RULE_FORMAT, Integer.toString(i) ,Integer.toString(j) , X);
-			if (!pi.containsKey(piSeqKey))
+			if (!pi.containsKey(piSeqKey))//used as a cache
 			{
 				ResultForamt maxResultMap = new ResultForamt();
 				maxResultMap = get_max_of_all(i, j, sent, X, rp);
 				dependency = (maxResultMap.getSubtree());
-				//left = (maxResultMap.getSubtree())[0];
-				//right = (maxResultMap.getSubtree())[1];
-				//String SeqRuleKey = String.format(UNARY_RULE_FORMAT, left ,right);
 				prob = maxResultMap.getProb();
 				ResultForamt ruleMap = new ResultForamt(dependency, prob);
 				pi.put(piSeqKey, ruleMap);
@@ -95,9 +85,7 @@ public class CkyAlg {
 				prob = pi.get(piSeqKey).getProb();
 			}
 		}
-		//String subtree = "[" + X + "," + left + "," + right + "]";
 		String subtree = "[" + "\"" + X + "\"" + ","  + dependency + "]";
-		
 		rf.setSubtree(subtree);
 		rf.setProb(prob);		
 		return rf;
@@ -128,18 +116,12 @@ public class CkyAlg {
 					String left = rule[0];
 					String right = rule[1];
 					String key = String.format(BINARY_RULE_FORMAT,X,left,right);
-					int splitPlus1 = s + 1; //only for printing debug
 					ruleProb = rp.binaryRuleProbMap.get(key);
 					left_Rule = cky_help(i, s, sent, left, rp);
-					//logger.info("checking:" + "pi(" + i + "," + s + "," + left + ") = " + left_Rule.getProb());
 						if (left_Rule.getProb() <= 0.0) continue;
 					right_Rule = cky_help (s+1,j,sent,right,rp);
-					//logger.info("checking:" + "pi(" + i + "," + s + "," + right + ") = " + right_Rule.getProb());
 						if (right_Rule.getProb() <= 0.0) continue;
-					//logger.info("checking:" + "pi(" + i + "," + j + "," + X + ") = " + "q(" + X + "->" + left + "," + right +")" + "* pi(" + i + "," + s + "," + left + ") * pi (" + splitPlus1 + "," + j + "," + right + ")");
-					//logger.info("value is :" + ruleProb + "*" + left_Rule.getProb() + "*" + right_Rule.getProb() );
 					allProb = ruleProb * left_Rule.getProb() * right_Rule.getProb();
-					//logger.info("value is :" + allProb );
 					if (allProb > best)//Update
 					{
 						best = allProb;
@@ -162,9 +144,6 @@ public class CkyAlg {
 		
 		
 	}
-	
-	
-	
 	/**
 	 * 
 	 * @param word

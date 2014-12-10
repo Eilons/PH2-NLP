@@ -8,9 +8,8 @@ public class RunExperiments {
 
 	public static void main(String[] args) throws IOException {
 		BaseLine baseline = new BaseLine();
-		baseline.createCkyAlg();
-		
-
+		//baseline.createCkyAlg();
+		baseline.parseVerticalMarkovization();
 	}
 
 }

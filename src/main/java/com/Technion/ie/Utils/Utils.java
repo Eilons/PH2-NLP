@@ -65,11 +65,11 @@ public class Utils {
 	 * return each tree with _RARE_ symbol for rare words
 	 * @throws JSONException 
 	 */
-	public static List<JSONArray> buildRareTrees (Map<String,Short> wordCountMap ) throws IOException, ParseException, JSONException
+	public static List<JSONArray> buildRareTrees (Map<String,Short> wordCountMap, String path ) throws IOException, ParseException, JSONException
 	{
 		List<String> treeLines = new ArrayList<String>();//contain all tree rows
 		List<JSONArray> parseTrees = new ArrayList<JSONArray>();
-		treeLines = Utils.readTreeFile("/parse_train.dat");
+		treeLines = Utils.readTreeFile(path);
 		
 		for (String line : treeLines) 
 		//each line is tree to parse
@@ -146,14 +146,14 @@ public class Utils {
 		return false;
 	}
 	
-	public static void writeNewParseTrees (List<JSONArray> parseTree)
+	public static void writeNewParseTrees (List<JSONArray> parseTree, String path)
 	{
 		String content = "";
 		for (JSONArray tree : parseTree) 
 		{
 			content += (String.format(RESULT_LINE_FORMAT, tree.toString()));
 		}
-		Utils.writeToFile ("/c:/h2p-NLP/parse_train_new.dat",content);
+		Utils.writeToFile (path,content);
 		
 	}
 
@@ -204,15 +204,13 @@ public class Utils {
 		return sentencesWords;
 	}
 	
-	public static void writeResultsToTxt (List<String> parseTreeContents)
+	public static void writeResultsToTxt (List<String> parseTreeContents, String path)
 	{
 		String content ="";
 		for (String sentence : parseTreeContents) {
 			
 				content += (String.format(RESULT_LINE_FORMAT, sentence));
 		}
-			writeToFile ("/c:/h2p-NLP/parse_dev.out",content);
-		
+			writeToFile (path,content);	
 	}
-	
 }
